@@ -1,0 +1,3 @@
+Services:
+Chứa các tệp định nghĩa các dịch vụ/logic nghiệp vụ chung.
+Các dịch vụ này sẽ được sử dụng bởi các controller để thực hiện các tác vụ liên quan đến dữ liệu, như truy vấn, cập nhật, xóa, v.v.
