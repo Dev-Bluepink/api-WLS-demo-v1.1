@@ -6,6 +6,7 @@ var HomeController = /** @class */ (function () {
     HomeController.prototype.home = function (req, res) {
         // console.log("đã tới trang home");
         res.status(200).send("Đây là trang homeeeeeeeeeeee");
+        // res.render("index", { user: req.user });
     };
     return HomeController;
 }());

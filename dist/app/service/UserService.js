@@ -35,13 +35,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var User_1 = require("../models/User");
+var User_1 = __importDefault(require("../models/User"));
 var hash_1 = require("../utils/hash");
 var UserService = /** @class */ (function () {
     function UserService() {
     }
-    UserService.prototype.addUser = function (username, email, password) {
+    UserService.prototype.addUser = function (username, email, password, googleId, fullname) {
         return __awaiter(this, void 0, void 0, function () {
             var existingUser, hashedPassword, newUser;
             return __generator(this, function (_a) {
@@ -51,19 +54,28 @@ var UserService = /** @class */ (function () {
                         })];
                     case 1:
                         existingUser = _a.sent();
-                        if (existingUser) {
-                            throw new Error("Username hoặc email đã tồn tại");
-                        }
+                        if (!existingUser) return [3 /*break*/, 4];
+                        if (!(googleId && existingUser.email === email)) return [3 /*break*/, 3];
+                        existingUser.googleId = googleId;
+                        existingUser.fullname = fullname;
+                        return [4 /*yield*/, existingUser.save()];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/, existingUser];
+                    case 3: throw new Error("Username hoặc email đã tồn tại");
+                    case 4:
                         hashedPassword = (0, hash_1.hashPassword)(password);
                         newUser = new User_1.default({
                             username: username,
                             email: email,
                             password: hashedPassword,
+                            fullname: fullname,
+                            googleId: googleId,
                         });
                         return [4 /*yield*/, newUser.save()];
-                    case 2:
+                    case 5:
                         _a.sent();
-                        return [2 /*return*/];
+                        return [2 /*return*/, newUser];
                 }
             });
         });
@@ -94,12 +106,7 @@ var UserService = /** @class */ (function () {
             var user, isPasswordValid;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        //Kiểm tra xem username và password có hợp lệ không
-                        if (!username || !password) {
-                            throw new Error("Username hoặc password không hợp lệ");
-                        }
-                        return [4 /*yield*/, this.findUserByUsername(username)];
+                    case 0: return [4 /*yield*/, this.findUserByUsername(username)];
                     case 1:
                         user = _a.sent();
                         if (!user) {
@@ -110,6 +117,25 @@ var UserService = /** @class */ (function () {
                             throw new Error("Password không đúng");
                         }
                         return [2 /*return*/, true];
+                }
+            });
+        });
+    };
+    UserService.prototype.findUserByFacebookId = function (facebookId) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, User_1.default.findOne({ facebookId: facebookId })];
+            });
+        });
+    };
+    UserService.prototype.findUserByGoogleId = function (googleId) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, User_1.default.findOne({ googleId: googleId })];
+                    case 1: 
+                    // Logic để tìm người dùng bằng Google ID
+                    return [2 /*return*/, _a.sent()];
                 }
             });
         });

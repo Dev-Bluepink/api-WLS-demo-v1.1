@@ -39,59 +39,61 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkLogin = void 0;
-var token_1 = require("../utils/token");
+var passport_1 = __importDefault(require("passport"));
+var passport_google_oauth20_1 = require("passport-google-oauth20");
+var google_1 = __importDefault(require("./google"));
 var UserService_1 = __importDefault(require("../service/UserService"));
 var userService = new UserService_1.default();
-var checkLogin = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var authHeader, token, decoded, user, err_1, err_2;
+passport_1.default.use(new passport_google_oauth20_1.Strategy({
+    clientID: google_1.default.client_id,
+    clientSecret: google_1.default.client_secret,
+    callbackURL: "http://localhost:10000/auth/google/callback",
+}, function (accessToken, refreshToken, profile, done) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, emails, displayName, email, username, user, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 5, , 6]);
-                authHeader = req.headers.authorization;
-                if (!authHeader) {
-                    return [2 /*return*/, res
-                            .status(401)
-                            .json({ message: "Authorization header không tồn tại" })];
-                }
-                token = authHeader.split(" ")[1];
-                if (!token) {
-                    return [2 /*return*/, res.status(401).json({ message: "Token không tồn tại" })];
-                }
-                _a.label = 1;
+                _a.trys.push([0, 4, , 5]);
+                id = profile.id, emails = profile.emails, displayName = profile.displayName;
+                email = emails ? emails[0].value : "";
+                username = displayName;
+                return [4 /*yield*/, userService.findUserByGoogleId(id)];
             case 1:
-                _a.trys.push([1, 3, , 4]);
-                decoded = (0, token_1.tokenVerify)(token);
-                if (!decoded || !decoded._id) {
-                    return [2 /*return*/, res.status(403).json({ message: "Token không hợp lệ" })];
-                }
-                return [4 /*yield*/, userService.findUserById(decoded._id)];
+                user = _a.sent();
+                if (!!user) return [3 /*break*/, 3];
+                return [4 /*yield*/, userService.addUser(email, email, "", id, username)];
             case 2:
                 user = _a.sent();
-                if (!user) {
-                    return [2 /*return*/, res.status(401).send("Vui lòng đăng nhập lại")];
-                }
-                if (user.status === "inactive") {
-                    return [2 /*return*/, res
-                            .status(403)
-                            .json({ message: "Tài khoản của bạn đã bị vô hiệu hóa" })];
-                }
-                req.user = user;
-                console.log("Xác thực người dùng thành công: " + req.user);
-                next();
-                return [3 /*break*/, 4];
-            case 3:
-                err_1 = _a.sent();
-                console.error("Lỗi xác thực token:", err_1);
-                return [2 /*return*/, res.status(403).json({ message: "Token không hợp lệ" })];
-            case 4: return [3 /*break*/, 6];
-            case 5:
-                err_2 = _a.sent();
-                console.error("Lỗi xử lý token:", err_2);
-                return [2 /*return*/, res.status(500).send("Lỗi xử lý token")];
-            case 6: return [2 /*return*/];
+                _a.label = 3;
+            case 3: return [2 /*return*/, done(null, user)];
+            case 4:
+                error_1 = _a.sent();
+                // console.error("Error in GoogleStrategy:", error);
+                return [2 /*return*/, done(error_1, false)];
+            case 5: return [2 /*return*/];
         }
     });
-}); };
-exports.checkLogin = checkLogin;
+}); }));
+passport_1.default.serializeUser(function (user, done) {
+    done(null, user._id);
+});
+passport_1.default.deserializeUser(function (id, done) { return __awaiter(void 0, void 0, void 0, function () {
+    var user, error_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, userService.findUserById(id)];
+            case 1:
+                user = _a.sent();
+                done(null, user);
+                return [3 /*break*/, 3];
+            case 2:
+                error_2 = _a.sent();
+                done(error_2, null);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
+exports.default = passport_1.default;

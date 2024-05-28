@@ -35,49 +35,55 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.register = exports.login = void 0;
-var UserService_1 = require("../service/UserService");
+exports.loginFB = exports.register = exports.login = void 0;
+var UserService_1 = __importDefault(require("../service/UserService"));
+var token_1 = require("../utils/token");
 var userService = new UserService_1.default();
 var login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, username, password, user, _b, error_1;
-    return __generator(this, function (_c) {
-        switch (_c.label) {
+    var _a, username, password, isValidUser, user, token, error_1;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
                 _a = req.body, username = _a.username, password = _a.password;
-                _c.label = 1;
+                if (!username || !password) {
+                    return [2 /*return*/, res.status(400).send("Thiếu thông tin đăng nhập")];
+                }
+                _b.label = 1;
             case 1:
-                _c.trys.push([1, 5, , 6]);
-                return [4 /*yield*/, userService.findUserByUsername(username)];
-            case 2:
-                user = _c.sent();
-                console.log(user);
-                _b = user;
-                if (!_b) return [3 /*break*/, 4];
+                _b.trys.push([1, 4, , 5]);
                 return [4 /*yield*/, userService.validateUser(username, password)];
+            case 2:
+                isValidUser = _b.sent();
+                if (!isValidUser) {
+                    return [2 /*return*/, res.status(400).send("Username hoặc password không hợp lệ")];
+                }
+                return [4 /*yield*/, userService.findUserByUsername(username)];
             case 3:
-                _b = (_c.sent());
-                _c.label = 4;
+                user = _b.sent();
+                if (!user) {
+                    return [2 /*return*/, res.status(404).send("User không tồn tại")];
+                }
+                token = (0, token_1.tokenSign)(user._id.toString());
+                res.cookie("tokenLogin", token, {
+                    expires: new Date(Date.now() + 18000000000),
+                });
+                res.status(200).send({ message: "Đăng nhập thành công", user: user, token: token });
+                return [3 /*break*/, 5];
             case 4:
-                if (_b) {
-                    //   const token = tokenSign(user._id.toString());
-                    res.status(200).json({ message: "Login successful", user: user });
-                }
-                else {
-                    res.status(401).send("Invalid credentials");
-                }
-                return [3 /*break*/, 6];
-            case 5:
-                error_1 = _c.sent();
-                res.status(500).send("Internal server error");
-                return [3 /*break*/, 6];
-            case 6: return [2 /*return*/];
+                error_1 = _b.sent();
+                res.status(500).send(error_1.message);
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
         }
     });
 }); };
 exports.login = login;
 var register = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, email, password, username, existingUser, error_2;
+    var _a, email, password, username, error_2;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -88,32 +94,41 @@ var register = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
                 _a = req.body, email = _a.email, password = _a.password;
                 username = req.body.username;
                 console.log(username, email, password);
-                // Kiểm tra logic đầu vào
                 if (!username || !email || !password) {
                     return [2 /*return*/, res.status(400).send("Thiếu thông tin đăng ký")];
                 }
                 _b.label = 1;
             case 1:
-                _b.trys.push([1, 4, , 5]);
-                return [4 /*yield*/, userService.findUserByUsername(username)];
-            case 2:
-                existingUser = _b.sent();
-                if (existingUser) {
-                    return [2 /*return*/, res.status(409).send("Tên người dùng đã tồn tại")];
-                }
-                // Thêm người dùng mới
+                _b.trys.push([1, 3, , 4]);
                 return [4 /*yield*/, userService.addUser(username, email, password)];
-            case 3:
-                // Thêm người dùng mới
+            case 2:
                 _b.sent();
                 res.status(201).send("Người dùng đã được đăng ký");
-                return [3 /*break*/, 5];
-            case 4:
+                return [3 /*break*/, 4];
+            case 3:
                 error_2 = _b.sent();
-                res.status(500).send("Lỗi máy chủ nội bộ");
-                return [3 /*break*/, 5];
-            case 5: return [2 /*return*/];
+                if (error_2.message === "Username hoặc email đã tồn tại") {
+                    return [2 /*return*/, res.status(409).send(error_2.message)];
+                }
+                res.status(500).send(error_2.message);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); };
 exports.register = register;
+var loginFB = function (req, res) {
+    console.log("Google callback successful");
+    var user = req.user;
+    if (!user) {
+        return res.status(400).send("User không tồn tại");
+    }
+    console.log(user);
+    var token = (0, token_1.tokenSign)(user._id.toString());
+    res.cookie("tokenLogin", token, {
+        expires: new Date(Date.now() + 18000000000),
+    });
+    res.status(200).send({ message: "Đăng nhập thành công", user: user, token: token });
+    // res.redirect("/");
+};
+exports.loginFB = loginFB;
