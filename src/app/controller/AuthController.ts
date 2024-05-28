@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import UserService from "../service/UserService";
 import { tokenSign } from "../utils/token";
-
+import { IUser } from "../models/User";
 const userService = new UserService();
 
 export const login = async (req: Request, res: Response) => {
@@ -23,6 +23,9 @@ export const login = async (req: Request, res: Response) => {
     }
 
     const token = tokenSign(user._id.toString());
+    res.cookie("tokenLogin", token, {
+      expires: new Date(Date.now() + 18000000000),
+    });
     res.status(200).send({ message: "Đăng nhập thành công", user, token });
   } catch (error: any) {
     res.status(500).send(error.message);
@@ -51,6 +54,22 @@ export const register = async (req: Request, res: Response) => {
     if (error.message === "Username hoặc email đã tồn tại") {
       return res.status(409).send(error.message);
     }
-    res.status(500).send("Lỗi máy chủ nội bộ");
+    res.status(500).send(error.message);
   }
+};
+
+export const loginFB = (req: Request, res: Response) => {
+  console.log("Google callback successful");
+
+  const user = req.user as IUser;
+  if (!user) {
+    return res.status(400).send("User không tồn tại");
+  }
+  console.log(user);
+  const token = tokenSign(user._id.toString());
+  res.cookie("tokenLogin", token, {
+    expires: new Date(Date.now() + 18000000000),
+  });
+  res.status(200).send({ message: "Đăng nhập thành công", user, token });
+  // res.redirect("/");
 };

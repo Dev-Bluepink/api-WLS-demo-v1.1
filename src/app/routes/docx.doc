@@ -1,3 +1,0 @@
-Models:
-Chứa các tệp định nghĩa các mô hình dữ liệu (data models) cho ứng dụng.
-Các mô hình này sẽ định nghĩa cấu trúc của dữ liệu, như Users, Products, Orders, v.v.

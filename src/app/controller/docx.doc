@@ -1,3 +1,0 @@
-Controllers:
-Chứa các tệp định nghĩa logic nghiệp vụ cho các endpoint API.
-Các controller sẽ giao tiếp với các dịch vụ (services) để thực hiện các thao tác như truy vấn dữ liệu, cập nhật, xóa, v.v.
