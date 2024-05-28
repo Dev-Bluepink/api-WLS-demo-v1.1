@@ -5,6 +5,8 @@ import { route } from "./app/routes/index";
 import * as db from "./app/config/db";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import swaggerSpec from "./app/config/swagger";
+import swaggerUi from "swagger-ui-express";
 
 const app = express();
 const port = process.env.PORT || 10000;
@@ -27,7 +29,7 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use((req, res, next) => {
   if (!req.session) {
     return next(new Error("Session not initialized")); // handle error

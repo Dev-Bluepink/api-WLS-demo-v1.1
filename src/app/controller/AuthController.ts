@@ -1,7 +1,8 @@
-import { Request, Response } from "express";
+import e, { Request, Response } from "express";
 import UserService from "../service/UserService";
 import { tokenSign } from "../utils/token";
 import { IUser } from "../models/User";
+import CustomError from "../utils/customError"; // Added import for CustomError
 const userService = new UserService();
 
 export const login = async (req: Request, res: Response) => {
@@ -28,7 +29,11 @@ export const login = async (req: Request, res: Response) => {
     });
     res.status(200).send({ message: "Đăng nhập thành công", user, token });
   } catch (error: any) {
-    res.status(500).send(error.message);
+    if (error.status && error.message) {
+      res.status(error.status).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Internal Server Error" }); // 500 Internal Server Error
+    }
   }
 };
 
@@ -51,10 +56,11 @@ export const register = async (req: Request, res: Response) => {
     await userService.addUser(username, email, password);
     res.status(201).send("Người dùng đã được đăng ký");
   } catch (error: any) {
-    if (error.message === "Username hoặc email đã tồn tại") {
-      return res.status(409).send(error.message);
+    if (error.status && error.message) {
+      res.status(error.status).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Internal Server Error" }); // 500 Internal Server Error
     }
-    res.status(500).send(error.message);
   }
 };
 

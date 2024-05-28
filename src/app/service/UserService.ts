@@ -1,5 +1,6 @@
 import UserModel from "../models/User";
 import { hashPassword, comparePassword } from "../utils/hash";
+import CustomError from "../utils/customError";
 
 class UserService {
   async addUser(
@@ -21,7 +22,8 @@ class UserService {
         await existingUser.save();
         return existingUser;
       }
-      throw new Error("Username hoặc email đã tồn tại");
+      const errorMessage = "Username hoặc email đã tồn tại";
+      throw new CustomError(409, errorMessage); // 409 Conflict
     }
     const hashedPassword = hashPassword(password);
     const newUser = new UserModel({
@@ -38,14 +40,16 @@ class UserService {
   async findUserByUsername(username: string) {
     //Kiểm tra xem username có hợp lệ không
     if (!username) {
-      throw new Error("Username không hợp lệ");
+      const errorMessage = "Username không hợp lệ";
+      throw new CustomError(400, errorMessage); // 400 Bad Request
     }
     return UserModel.findOne({ username });
   }
 
   async findUserById(idUser: string) {
     if (!idUser) {
-      throw new Error("Id user không hợp lệ");
+      const errorMessage = "Id user không hợp lệ";
+      throw new CustomError(400, errorMessage); // 400 Bad Request
     }
     return UserModel.findById(idUser);
   }
@@ -54,11 +58,13 @@ class UserService {
     //Kiểm tra xem username và password có hợp lệ không
     const user = await this.findUserByUsername(username);
     if (!user) {
-      throw new Error("User không tồn tại");
+      const errorMessage = "User không tồn tại";
+      throw new CustomError(404, errorMessage); // 404 Not Found
     }
     const isPasswordValid = comparePassword(password, user.password);
     if (!isPasswordValid) {
-      throw new Error("Password không đúng");
+      const errorMessage = "Password không đúng";
+      throw new CustomError(401, errorMessage); // 401 Unauthorized
     }
     return true;
   }
