@@ -2,12 +2,11 @@ import { Request, Response } from "express";
 import UserService from "../service/UserService";
 import { tokenSign } from "../utils/token";
 import { IUser } from "../models/User";
-import CustomError from "../utils/customError"; // Added import for CustomError
 const userService = new UserService();
 
 export const login = async (req: Request, res: Response) => {
   const { username, password } = req.body;
-
+  console.log(username, password);
   if (!username || !password) {
     return res.status(400).send("Thiếu thông tin đăng nhập");
   }

@@ -4,7 +4,6 @@
  *   name: User
  *   description: Quản lý người dùng
  */
-// Start of Selection
 import userController from "../controller/UserController";
 import { Router } from "express";
 
@@ -44,6 +43,15 @@ router.get("/get-detail-user/:id", userController.getUser);
  *         schema:
  *           type: string
  *         description: ID của người dùng
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Người dùng đã bị xóa
@@ -65,24 +73,25 @@ router.put("/toggle-user-status/:id", userController.toggleUserStatus);
  *         schema:
  *           type: string
  *         description: ID của người dùng
- *       - in: body
- *         name: user
- *         description: Thông tin người dùng cần cập nhật
- *         schema:
- *           type: object
- *           properties:
- *             username:
- *               type: string
- *             email:
- *               type: string
- *             password:
- *               type: string
- *             fullname:
- *               type: string
- *             role:
- *               type: string
- *             avatar:
- *               type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               fullname:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *               avatar:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Thông tin người dùng đã được cập nhật
@@ -111,19 +120,19 @@ router.get("/get-all-user", userController.getAllUsers);
  *   post:
  *     summary: Đăng ký người dùng mới
  *     tags: [User]
- *     parameters:
- *       - in: body
- *         name: user
- *         description: Thông tin người dùng mới
- *         schema:
- *           type: object
- *           properties:
- *             username:
- *               type: string
- *             email:
- *               type: string
- *             password:
- *               type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Người dùng đã được đăng ký

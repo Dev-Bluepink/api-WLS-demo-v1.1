@@ -23,6 +23,15 @@ const router = Router();
  *         schema:
  *           type: string
  *         description: ID của trường học
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Trạng thái của trường học đã được cập nhật
@@ -71,16 +80,17 @@ router.get("/get-school-detail/:idSchool", SchoolController.getSchoolById);
  *         schema:
  *           type: string
  *         description: ID của trường học
- *       - in: body
- *         name: school
- *         description: Thông tin trường học cần cập nhật
- *         schema:
- *           type: object
- *           properties:
- *             name:
- *               type: string
- *             address:
- *               type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               address:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Thông tin trường học đã được cập nhật
@@ -115,17 +125,17 @@ router.get("/get-all-schools", SchoolController.getAllSchools);
  *   post:
  *     summary: Tạo mới một trường học
  *     tags: [School]
- *     parameters:
- *       - in: body
- *         name: school
- *         description: Thông tin trường học mới
- *         schema:
- *           type: object
- *           properties:
- *             name:
- *               type: string
- *             address:
- *               type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               address:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Trường học đã được tạo
