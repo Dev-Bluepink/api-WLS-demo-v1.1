@@ -7,7 +7,9 @@ import path from "path";
 
 const userService = new UserService();
 
-const isDistFolderExists = fs.existsSync(path.resolve(__dirname, "../../dist"));
+const isDistFolderExists = fs.existsSync(
+  path.resolve(__dirname, "../../../dist")
+);
 
 passport.use(
   new GoogleStrategy(
@@ -19,6 +21,7 @@ passport.use(
         : "http://localhost:10000/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
+      console.log("callbackURL: ", isDistFolderExists);
       try {
         const { id, emails, displayName } = profile;
         const email = emails ? emails[0].value : "";

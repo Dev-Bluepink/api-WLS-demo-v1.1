@@ -3,7 +3,9 @@ import fs from "fs";
 import path from "path";
 
 // Kiểm tra xem thư mục 'dist' có tồn tại hay không
-const isDistFolderExists = fs.existsSync(path.resolve(__dirname, "../../dist"));
+const isDistFolderExists = fs.existsSync(
+  path.resolve(__dirname, "../../../dist")
+);
 
 const options = {
   definition: {
