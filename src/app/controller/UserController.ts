@@ -5,9 +5,15 @@ const userService = new UserService();
 
 class UserController {
   async getAllUsers(req: Request, res: Response) {
+    const page = req.query.page ? parseInt(req.query.page as string) : 1;
+    const PAGE_SIZE = req.query.PAGE_SIZE
+      ? parseInt(req.query.PAGE_SIZE as string)
+      : 10;
     try {
-      const users = await userService.getAllUser();
-      res.status(200).json(users);
+      const users = await userService.getAllUser(page, PAGE_SIZE);
+      const count = await userService.countAllUsers();
+      const totalPage = Math.ceil(count / PAGE_SIZE);
+      res.status(200).json({ count, totalPage, users });
     } catch (error: any) {
       if (error.status && error.message) {
         res.status(error.status).json({ message: error.message });

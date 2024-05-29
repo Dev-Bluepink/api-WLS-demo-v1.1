@@ -9,6 +9,59 @@ const router = Router();
  *   - name: School
  *     description: Các API liên quan đến trường học
  */
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     School:
+ *       type: object
+ *       required:
+ *         - name
+ *         - address
+ *         - tinh
+ *         - quan
+ *         - xa
+ *         - captruong
+ *       properties:
+ *         _id:
+ *           type: string
+ *         name:
+ *           type: string
+ *         address:
+ *           type: string
+ *         rank:
+ *           type: string
+ *         vote:
+ *           type: string
+ *         schoolyear:
+ *           type: string
+ *         avatar:
+ *           type: string
+ *         content:
+ *           type: string
+ *         level:
+ *           type: string
+ *         phone:
+ *           type: string
+ *         banner:
+ *           type: string
+ *         email:
+ *           type: string
+ *         status:
+ *           type: string
+ *         obdata:
+ *           type: string
+ *         tinh:
+ *           type: string
+ *         quan:
+ *           type: string
+ *         xa:
+ *           type: string
+ *         captruong:
+ *           type: string
+ *         countryid:
+ *           type: string
+ */
 
 /**
  * @swagger
@@ -80,6 +133,7 @@ router.get("/get-school-detail/:idSchool", SchoolController.getSchoolById);
  *             properties:
  *               name:
  *                 type: string
+ *                 required: true
  *               rank:
  *                 type: string
  *               vote:
@@ -92,6 +146,7 @@ router.get("/get-school-detail/:idSchool", SchoolController.getSchoolById);
  *                 type: string
  *               address:
  *                 type: string
+ *                 required: true
  *               level:
  *                 type: string
  *               phone:
@@ -106,12 +161,16 @@ router.get("/get-school-detail/:idSchool", SchoolController.getSchoolById);
  *                 type: string
  *               tinh:
  *                 type: string
+ *                 required: true
  *               quan:
  *                 type: string
+ *                 required: true
  *               xa:
  *                 type: string
+ *                 required: true
  *               captruong:
  *                 type: string
+ *                 required: true
  *               countryid:
  *                 type: string
  *     responses:
@@ -132,16 +191,37 @@ router.put("/update-school/:idSchool", SchoolController.updateSchool);
  *   get:
  *     summary: Lấy danh sách tất cả các trường học
  *     tags: [School]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Số trang hiện tại
+ *       - in: query
+ *         name: PAGE_SIZE
+ *         schema:
+ *           type: integer
+ *         description: Số lượng trường học trên mỗi trang
  *     responses:
  *       200:
  *         description: Danh sách các trường học
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 count:
+ *                   type: integer
+ *                 schools:
+ *                   type: array
+ *                 totalPage:
+ *                   type: integer
  *       404:
  *         description: Không tìm thấy trường học nào
  *       500:
  *         description: Lỗi máy chủ nội bộ
  */
 router.get("/get-all-schools", SchoolController.getAllSchools);
-
 /**
  * @swagger
  * /school/create-school:
@@ -185,12 +265,16 @@ router.get("/get-all-schools", SchoolController.getAllSchools);
  *                 type: string
  *               tinh:
  *                 type: string
+ *                 required: true
  *               quan:
  *                 type: string
+ *                 required: true
  *               xa:
  *                 type: string
+ *                 required: true
  *               captruong:
  *                 type: string
+ *                 required: true
  *               countryid:
  *                 type: string
  *     responses:

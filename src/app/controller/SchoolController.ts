@@ -21,9 +21,15 @@ class SchoolController {
   }
 
   async getAllSchools(req: Request, res: Response) {
+    const page = req.query.page ? parseInt(req.query.page as string) : 1;
+    const PAGE_SIZE = req.query.PAGE_SIZE
+      ? parseInt(req.query.PAGE_SIZE as string)
+      : 10;
     try {
-      const schools = await SchoolService.getAllSchools();
-      return res.status(200).json(schools);
+      const schools = await SchoolService.getAllSchools(page, PAGE_SIZE);
+      const count = schools.length;
+      const totalPage = Math.ceil(count / PAGE_SIZE);
+      return res.status(200).json({ count, totalPage, schools });
     } catch (error: any) {
       if (error.status && error.message) {
         res.status(error.status).json({ message: error.message });
@@ -75,6 +81,54 @@ class SchoolController {
       await SchoolService.updateSchool(idSchool, req.body);
       const school = await SchoolService.getSchoolById(idSchool);
       return res.status(200).json(school);
+    } catch (error: any) {
+      if (error.status && error.message) {
+        return res.status(error.status).json({ message: error.message });
+      } else {
+        return res.status(500).json({ message: "Lỗi máy chủ nội bộ" });
+      }
+    }
+  }
+
+  async searchSchool(req: Request, res: Response) {
+    const page = req.query.page ? parseInt(req.query.page as string) : 1;
+    const PAGE_SIZE = req.query.PAGE_SIZE
+      ? parseInt(req.query.PAGE_SIZE as string)
+      : 10;
+    try {
+      const { name, tinh, quan, xa, captruong } = req.body;
+
+      if (!name && !tinh && !quan && !xa && !captruong) {
+        const schools = await SchoolService.getAllSchools(page, PAGE_SIZE);
+        const count = await SchoolService.countAllSchools();
+        const totalPage = Math.ceil(count / PAGE_SIZE);
+        return res.status(200).json({ count, totalPage, schools });
+      }
+
+      const schools = await SchoolService.searchSchool(
+        page,
+        PAGE_SIZE,
+        name,
+        tinh,
+        quan,
+        xa,
+        captruong
+      );
+      const count = await SchoolService.countSearchResults(
+        name,
+        tinh,
+        quan,
+        xa,
+        captruong
+      );
+      const totalPage = Math.ceil(count / PAGE_SIZE);
+      if (schools.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "Không tìm thấy trường học nào" });
+      }
+
+      return res.status(200).json({ count, totalPage, schools });
     } catch (error: any) {
       if (error.status && error.message) {
         return res.status(error.status).json({ message: error.message });

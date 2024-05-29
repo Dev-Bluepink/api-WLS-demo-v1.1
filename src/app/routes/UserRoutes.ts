@@ -11,6 +11,39 @@ const router = Router();
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - username
+ *         - email
+ *         - password
+ *         - status
+ *         - role
+ *       properties:
+ *         _id:
+ *           type: string
+ *         username:
+ *           type: string
+ *         email:
+ *           type: string
+ *         password:
+ *           type: string
+ *         status:
+ *           type: string
+ *         googleId:
+ *           type: string
+ *         fullname:
+ *           type: string
+ *         role:
+ *           type: string
+ *         avatar:
+ *           type: string
+ */
+
+/**
+ * @swagger
  * /user/get-detail-user/{id}:
  *   get:
  *     summary: Lấy thông tin chi tiết của người dùng
@@ -97,6 +130,17 @@ router.put("/update-user/:id", userController.updateUser);
  *   get:
  *     summary: Lấy danh sách tất cả người dùng
  *     tags: [User]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Số trang
+ *       - in: query
+ *         name: PAGE_SIZE
+ *         schema:
+ *           type: integer
+ *         description: Kích thước trang
  *     responses:
  *       200:
  *         description: Danh sách người dùng

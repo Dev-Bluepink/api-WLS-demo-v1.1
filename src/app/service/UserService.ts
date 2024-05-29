@@ -102,9 +102,11 @@ class UserService {
     }
   }
 
-  async getAllUser() {
+  async getAllUser(page: number, PAGE_SIZE: number) {
     try {
-      const users = await UserModel.find({});
+      const users = await UserModel.find({})
+        .skip((page - 1) * PAGE_SIZE)
+        .limit(PAGE_SIZE);
       if (!users || users.length === 0) {
         throw new CustomError(404, "Không tìm thấy người dùng nào"); // 404 Not Found
       }
@@ -212,6 +214,14 @@ class UserService {
       } else {
         throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
       }
+    }
+  }
+
+  async countAllUsers() {
+    try {
+      return await UserModel.countDocuments({});
+    } catch (error: any) {
+      throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
     }
   }
 }
