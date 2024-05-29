@@ -2,15 +2,21 @@ import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import config from "./google";
 import UserService from "../service/UserService";
+import fs from "fs";
+import path from "path";
 
 const userService = new UserService();
+
+const isDistFolderExists = fs.existsSync(path.resolve(__dirname, "../../dist"));
 
 passport.use(
   new GoogleStrategy(
     {
       clientID: config.client_id,
       clientSecret: config.client_secret,
-      callbackURL: "http://localhost:10000/auth/google/callback",
+      callbackURL: isDistFolderExists
+        ? "https://api-wls-demo-v1-1.onrender.com/auth/google/callback"
+        : "http://localhost:10000/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
