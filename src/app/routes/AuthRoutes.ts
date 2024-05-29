@@ -6,15 +6,16 @@ import { login, register, loginFB } from "../controller/AuthController";
 /**
  * @swagger
  * tags:
- *   name: Auth
- *   description: Authentication routes
+ *   - name: Auth
+ *     description: Các tuyến xác thực
+ *
  */
 
 /**
  * @swagger
  * /auth/register:
  *   post:
- *     summary: Register a new user
+ *     summary: Đăng ký người dùng mới
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -35,13 +36,13 @@ import { login, register, loginFB } from "../controller/AuthController";
  *                 type: string
  *     responses:
  *       201:
- *         description: User registered successfully
+ *         description: Đăng ký người dùng thành công
  *       400:
- *         description: Bad request
+ *         description: Yêu cầu không hợp lệ
  *       409:
- *         description: Username or email already exists
+ *         description: Tên người dùng hoặc email đã tồn tại
  *       500:
- *         description: Server error
+ *         description: Lỗi máy chủ
  */
 router.post("/register", register);
 
@@ -91,12 +92,25 @@ router.post("/register", register);
  *       400:
  *         description: Thiếu thông tin đăng nhập hoặc thông tin không hợp lệ
  *       404:
- *         description: User không tồn tại
+ *         description: Người dùng không tồn tại
  *       500:
  *         description: Lỗi máy chủ
  */
 router.post("/login", login);
 
+/**
+ * @swagger
+ * /auth/google:
+ *   get:
+ *     summary: Đăng nhập bằng Google
+ *     description: Sử dụng Google OAuth để đăng nhập.
+ *     tags: [Auth]
+ *     responses:
+ *       302:
+ *         description: Chuyển hướng đến trang xác thực của Google.
+ *       500:
+ *         description: Lỗi máy chủ.
+ */
 router.get(
   "/google",
   passport.authenticate("google", {
@@ -104,11 +118,30 @@ router.get(
   })
 );
 
+/**
+ * @swagger
+ * /auth/google/callback:
+ *   get:
+ *     summary: Xử lý callback từ Google
+ *     description: Xử lý callback sau khi người dùng xác thực với Google.
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Đăng nhập thành công.
+ *       401:
+ *         description: Xác thực thất bại.
+ *       500:
+ *         description: Lỗi máy chủ.
+ */
 router.get(
   "/google/callback",
   passport.authenticate("google", { failureRedirect: "/login" }),
-  loginFB
+  (req, res) => {
+    // Đăng nhập thành công, chuyển hướng đến trang chủ.
+    res.redirect("/");
+  }
 );
+
 router.get("/logout", (req, res, next) => {
   req.logout((err) => {
     if (err) {
