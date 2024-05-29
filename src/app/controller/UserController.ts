@@ -38,8 +38,6 @@ class UserController {
 
     const { email, password } = req.body;
     const username = req.body.username;
-    console.log(req.body);
-    console.log(username, email, password);
 
     if (!username || !email || !password) {
       return res.status(400).send("Thiếu thông tin đăng ký2");

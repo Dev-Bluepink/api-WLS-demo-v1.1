@@ -23,15 +23,6 @@ const router = Router();
  *         schema:
  *           type: string
  *         description: ID của trường học
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               status:
- *                 type: string
  *     responses:
  *       200:
  *         description: Trạng thái của trường học đã được cập nhật
@@ -89,7 +80,39 @@ router.get("/get-school-detail/:idSchool", SchoolController.getSchoolById);
  *             properties:
  *               name:
  *                 type: string
+ *               rank:
+ *                 type: string
+ *               vote:
+ *                 type: string
+ *               schoolyear:
+ *                 type: string
+ *               avatar:
+ *                 type: string
+ *               content:
+ *                 type: string
  *               address:
+ *                 type: string
+ *               level:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               banner:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *               obdata:
+ *                 type: string
+ *               tinh:
+ *                 type: string
+ *               quan:
+ *                 type: string
+ *               xa:
+ *                 type: string
+ *               captruong:
+ *                 type: string
+ *               countryid:
  *                 type: string
  *     responses:
  *       200:
@@ -134,7 +157,41 @@ router.get("/get-all-schools", SchoolController.getAllSchools);
  *             properties:
  *               name:
  *                 type: string
+ *                 required: true
  *               address:
+ *                 type: string
+ *                 required: true
+ *               rank:
+ *                 type: string
+ *               vote:
+ *                 type: string
+ *               schoolyear:
+ *                 type: string
+ *               avatar:
+ *                 type: string
+ *               content:
+ *                 type: string
+ *               level:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               banner:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *               obdata:
+ *                 type: string
+ *               tinh:
+ *                 type: string
+ *               quan:
+ *                 type: string
+ *               xa:
+ *                 type: string
+ *               captruong:
+ *                 type: string
+ *               countryid:
  *                 type: string
  *     responses:
  *       201:

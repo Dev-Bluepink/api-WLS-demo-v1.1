@@ -43,15 +43,6 @@ router.get("/get-detail-user/:id", userController.getUser);
  *         schema:
  *           type: string
  *         description: ID của người dùng
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               status:
- *                 type: string
  *     responses:
  *       200:
  *         description: Người dùng đã bị xóa

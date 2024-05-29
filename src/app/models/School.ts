@@ -15,10 +15,10 @@ export interface ISchool extends Document {
   email?: string;
   status?: string;
   obdata?: string;
-  tinh?: string;
-  quan?: string;
-  xa?: string;
-  captruong?: string;
+  tinh: string;
+  quan: string;
+  xa: string;
+  captruong: string;
   countryid?: string;
 }
 
@@ -35,13 +35,17 @@ const SchoolSchema: Schema = new Schema(
     phone: { type: String, default: null },
     banner: { type: String, default: null },
     email: { type: String, default: null },
-    status: { type: String, default: null },
     obdata: { type: String, default: null },
     tinh: { type: String, default: null },
     quan: { type: String, default: null },
     xa: { type: String, default: null },
     captruong: { type: String, default: null },
     countryid: { type: String, default: null },
+    status: {
+      type: String,
+      default: "active",
+      enum: ["active", "inactive"],
+    },
   },
   {
     timestamps: true,

@@ -8,7 +8,8 @@ class SchoolController {
       if (!idSchool) {
         return res.status(400).json({ message: "ID trường học là bắt buộc" });
       }
-      const school = await SchoolService.toggleSchoolStatus(idSchool);
+      await SchoolService.toggleSchoolStatus(idSchool);
+      const school = await SchoolService.getSchoolById(idSchool);
       return res.status(200).json(school);
     } catch (error: any) {
       if (error.status && error.message) {
@@ -51,9 +52,9 @@ class SchoolController {
 
   async createSchool(req: Request, res: Response) {
     try {
-      const { name, address } = req.body;
-      if (!name || !address) {
-        return res.status(400).json({ message: "Tên và địa chỉ là bắt buộc" });
+      const { name, address, captruong, quan, xa, tinh } = req.body;
+      if (!name || !address || !captruong || !quan || !xa || !tinh) {
+        return res.status(400).json({ message: "Thiếu thông tin cần thiết" });
       }
 
       const school = await SchoolService.createSchool(req.body);
@@ -71,7 +72,8 @@ class SchoolController {
       if (!idSchool) {
         return res.status(400).json({ message: "ID trường học là bắt buộc" });
       }
-      const school = await SchoolService.updateSchool(idSchool, req.body);
+      await SchoolService.updateSchool(idSchool, req.body);
+      const school = await SchoolService.getSchoolById(idSchool);
       return res.status(200).json(school);
     } catch (error: any) {
       if (error.status && error.message) {

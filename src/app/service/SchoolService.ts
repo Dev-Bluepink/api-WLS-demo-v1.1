@@ -1,8 +1,5 @@
-import { Request, Response } from "express";
 import SchoolModel from "../models/School";
-import { ISchool } from "../models/School";
 import CustomError from "../utils/customError";
-import mongoose from "mongoose";
 
 class SchoolService {
   async toggleSchoolStatus(idSchool: string) {
@@ -14,7 +11,11 @@ class SchoolService {
       school.status = school.status === "active" ? "inactive" : "active";
       return await SchoolModel.findByIdAndUpdate(idSchool, school);
     } catch (error: any) {
-      throw new CustomError(500, error.message);
+      if (error.status && error.message) {
+        throw new CustomError(error.status, error.message);
+      } else {
+        throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
+      }
     }
   }
 
@@ -26,10 +27,10 @@ class SchoolService {
       }
       return schools;
     } catch (error: any) {
-      if (error instanceof mongoose.Error) {
-        throw new CustomError(500, "Lỗi cơ sở dữ liệu");
+      if (error.status && error.message) {
+        throw new CustomError(error.status, error.message);
       } else {
-        throw new CustomError(500, error.message);
+        throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
       }
     }
   }
@@ -42,10 +43,10 @@ class SchoolService {
       }
       return school;
     } catch (error: any) {
-      if (error instanceof mongoose.Error) {
-        throw new CustomError(500, "Lỗi cơ sở dữ liệu");
+      if (error.status && error.message) {
+        throw new CustomError(error.status, error.message);
       } else {
-        throw new CustomError(500, error.message);
+        throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
       }
     }
   }
@@ -54,24 +55,51 @@ class SchoolService {
     try {
       return await SchoolModel.create(school);
     } catch (error: any) {
-      if (error instanceof mongoose.Error) {
-        throw new CustomError(500, "Lỗi cơ sở dữ liệu");
+      if (error.status && error.message) {
+        throw new CustomError(error.status, error.message);
       } else {
-        throw new CustomError(500, error.message);
+        throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
       }
     }
   }
 
   async updateSchool(idSchool: string, school: {}) {
+    console.log(school);
     try {
       return await SchoolModel.findByIdAndUpdate(idSchool, school);
     } catch (error: any) {
-      if (error instanceof mongoose.Error) {
-        throw new CustomError(500, "Lỗi cơ sở dữ liệu");
+      if (error.status && error.message) {
+        throw new CustomError(error.status, error.message);
       } else {
-        throw new CustomError(500, error.message);
+        throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
       }
     }
+  }
+  async searchSchool(
+    name?: string,
+    tinh?: string,
+    quan?: string,
+    xa?: string,
+    captruong?: string
+  ) {
+    const filter: any = {};
+
+    if (name) {
+      filter.name = { $regex: new RegExp(name, "i") };
+    }
+    if (tinh) {
+      filter.tinh = { $regex: new RegExp(tinh, "i") };
+    }
+    if (quan) {
+      filter.quan = { $regex: new RegExp(quan, "i") };
+    }
+    if (xa) {
+      filter.xa = { $regex: new RegExp(xa, "i") };
+    }
+    if (captruong) {
+      filter.captruong = { $regex: new RegExp(captruong, "i") };
+    }
+    return await SchoolModel.find(filter);
   }
 }
 

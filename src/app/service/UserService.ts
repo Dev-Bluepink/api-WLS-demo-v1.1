@@ -109,11 +109,15 @@ class UserService {
         throw new CustomError(404, "Không tìm thấy người dùng nào"); // 404 Not Found
       }
       return users;
-    } catch (error) {
-      if (error instanceof CustomError) {
-        throw error;
+    } catch (error: any) {
+      if (error.status && error.message) {
+        throw new CustomError(error.status, error.message);
       } else {
-        throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
+        if (error.status && error.message) {
+          throw new CustomError(error.status, error.message);
+        } else {
+          throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
+        }
       }
     }
   }
@@ -131,41 +135,34 @@ class UserService {
     return user;
   }
 
-  async updateUser(
-    idUser: string,
-    username?: string,
-    email?: string,
-    password?: string,
-    fullname?: string,
-    avatar?: string,
-    role?: string
-  ) {
+  async updateUser(idUser: string, user: any) {
     if (!idUser) {
       const errorMessage = "Id user không hợp lệ";
       throw new CustomError(400, errorMessage); // 400 Bad Request
     }
-
     const updateFields: any = {};
-    if (username) updateFields.username = username;
-    if (email) updateFields.email = email;
-    if (password) updateFields.password = hashPassword(password);
-    if (fullname) updateFields.fullname = fullname;
-    if (avatar) updateFields.avatar = avatar;
-    if (role) updateFields.role = role;
+    if (user.username) updateFields.username = user.username;
+    if (user.email) updateFields.email = user.email;
+    if (user.password) updateFields.password = hashPassword(user.password);
+    if (user.fullname) updateFields.fullname = user.fullname;
+    if (user.avatar) updateFields.avatar = user.avatar;
+    if (user.role) updateFields.role = user.role;
     try {
       if (Object.keys(updateFields).length === 0) {
         const errorMessage = "Không có trường nào được cập nhật";
         throw new CustomError(400, errorMessage); // 400 Bad Request
       }
-      if (username) {
-        const existingUser = await UserModel.findOne({ username });
+      if (user.username) {
+        const existingUser = await UserModel.findOne({
+          username: user.username,
+        });
         if (existingUser) {
           const errorMessage = "Username đã tồn tại";
           throw new CustomError(409, errorMessage); // 409 Conflict
         }
       }
-      if (email) {
-        const existingUser = await UserModel.findOne({ email });
+      if (user.email) {
+        const existingUser = await UserModel.findOne({ email: user.email });
         if (existingUser) {
           const errorMessage = "Email đã tồn tại";
           throw new CustomError(409, errorMessage); // 409 Conflict
@@ -183,8 +180,12 @@ class UserService {
         throw new CustomError(404, errorMessage); // 404 Not Found
       }
       return updatedUser;
-    } catch (error) {
-      throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
+    } catch (error: any) {
+      if (error.status && error.message) {
+        throw new CustomError(error.status, error.message);
+      } else {
+        throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
+      }
     }
   }
 
@@ -205,9 +206,9 @@ class UserService {
       await user.save();
 
       return user;
-    } catch (error) {
-      if (error instanceof mongoose.Error) {
-        throw new CustomError(500, "Lỗi cơ sở dữ liệu"); // 500 Database Error
+    } catch (error: any) {
+      if (error.status && error.message) {
+        throw new CustomError(error.status, error.message);
       } else {
         throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
       }
