@@ -1,5 +1,4 @@
 import mongoose, { Schema, Document } from "mongoose";
-import google from "./../config/google";
 
 export interface IUser extends Document {
   _id: mongoose.Types.ObjectId;
@@ -9,6 +8,8 @@ export interface IUser extends Document {
   status: string;
   googleId?: string;
   fullname?: string;
+  role: string;
+  avatar?: string;
 }
 
 const UserSchema: Schema = new Schema(
@@ -23,6 +24,12 @@ const UserSchema: Schema = new Schema(
       default: "active",
       enum: ["active", "inactive"],
     },
+    role: {
+      type: String,
+      default: "user",
+      enum: ["user", "admin"],
+    },
+    avatar: String,
   },
   {
     timestamps: true,

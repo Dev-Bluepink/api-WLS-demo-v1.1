@@ -13,41 +13,6 @@ import { login, register, loginFB } from "../controller/AuthController";
 
 /**
  * @swagger
- * /auth/register:
- *   post:
- *     summary: Đăng ký người dùng mới
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - username
- *               - email
- *               - password
- *             properties:
- *               username:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       201:
- *         description: Đăng ký người dùng thành công
- *       400:
- *         description: Yêu cầu không hợp lệ
- *       409:
- *         description: Tên người dùng hoặc email đã tồn tại
- *       500:
- *         description: Lỗi máy chủ
- */
-router.post("/register", register);
-
-/**
- * @swagger
  * /auth/login:
  *   post:
  *     summary: Đăng nhập người dùng

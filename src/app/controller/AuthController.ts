@@ -1,4 +1,4 @@
-import e, { Request, Response } from "express";
+import { Request, Response } from "express";
 import UserService from "../service/UserService";
 import { tokenSign } from "../utils/token";
 import { IUser } from "../models/User";
@@ -38,8 +38,6 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const register = async (req: Request, res: Response) => {
-  console.log("đã tới trang đăng ký");
-
   if (!req.body) {
     return res.status(400).send("Thiếu thông tin đăng ký");
   }

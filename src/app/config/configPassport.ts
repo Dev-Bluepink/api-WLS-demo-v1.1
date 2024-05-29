@@ -14,23 +14,21 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        // console.log("Access Token:", accessToken);
-        // console.log("Profile:", profile);
-
         const { id, emails, displayName } = profile;
         const email = emails ? emails[0].value : "";
         const username = displayName;
 
-        let user = await userService.findUserByGoogleId(id);
-        // console.log("User found:", user);
+        if (!email || !id) {
+          return done(new Error("Email hoặc Google ID không hợp lệ"), false);
+        }
+
+        let user = await userService.findUserByGoogleId(email, id);
         if (!user) {
           user = await userService.addUser(email, email, "", id, username);
-          // console.log("New user created:", user);
         }
 
         return done(null, user);
       } catch (error) {
-        // console.error("Error in GoogleStrategy:", error);
         return done(error, false);
       }
     }
