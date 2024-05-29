@@ -1,7 +1,7 @@
 import * as express from "express";
 const router = express.Router();
 import passport from "../config/configPassport";
-import { login, register, loginFB } from "../controller/AuthController";
+import { login, register, loginGG } from "../controller/AuthController";
 
 /**
  * @swagger
@@ -101,10 +101,7 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", { failureRedirect: "/login" }),
-  (req, res) => {
-    // Đăng nhập thành công, chuyển hướng đến trang chủ.
-    res.redirect("/");
-  }
+  loginGG
 );
 
 router.get("/logout", (req, res, next) => {

@@ -61,7 +61,7 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
-export const loginFB = (req: Request, res: Response) => {
+export const loginGG = (req: Request, res: Response) => {
   console.log("Google callback successful");
 
   const user = req.user as IUser;
@@ -70,9 +70,9 @@ export const loginFB = (req: Request, res: Response) => {
   }
   console.log(user);
   const token = tokenSign(user._id.toString());
+  console.log(token);
   res.cookie("tokenLogin", token, {
     expires: new Date(Date.now() + 18000000000),
   });
   res.status(200).send({ message: "Đăng nhập thành công", user, token });
-  // res.redirect("/");
 };
