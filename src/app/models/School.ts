@@ -2,13 +2,13 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface ISchool extends Document {
   _id: mongoose.Types.ObjectId;
-  name?: string;
+  name: string;
   rank?: string;
   vote?: string;
   schoolyear?: string;
   avatar?: string;
   content?: string;
-  address?: string;
+  address: string;
   level?: string;
   phone?: string;
   banner?: string;

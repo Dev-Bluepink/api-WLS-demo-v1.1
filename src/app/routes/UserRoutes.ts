@@ -77,9 +77,11 @@ router.put("/toggle-user-status/:id", userController.toggleUserStatus);
  *               type: string
  *             password:
  *               type: string
- *             googleId:
- *               type: string
  *             fullname:
+ *               type: string
+ *             role:
+ *               type: string
+ *             avatar:
  *               type: string
  *     responses:
  *       200:

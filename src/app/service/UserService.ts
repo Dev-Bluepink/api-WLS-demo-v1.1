@@ -1,7 +1,6 @@
 import UserModel from "../models/User";
 import { hashPassword, comparePassword } from "../utils/hash";
 import CustomError from "../utils/customError";
-import User from "../models/User";
 import mongoose from "mongoose";
 
 class UserService {
@@ -137,8 +136,9 @@ class UserService {
     username?: string,
     email?: string,
     password?: string,
-    googleId?: string,
-    fullname?: string
+    fullname?: string,
+    avatar?: string,
+    role?: string
   ) {
     if (!idUser) {
       const errorMessage = "Id user không hợp lệ";
@@ -149,10 +149,28 @@ class UserService {
     if (username) updateFields.username = username;
     if (email) updateFields.email = email;
     if (password) updateFields.password = hashPassword(password);
-    if (googleId) updateFields.googleId = googleId;
     if (fullname) updateFields.fullname = fullname;
-
+    if (avatar) updateFields.avatar = avatar;
+    if (role) updateFields.role = role;
     try {
+      if (Object.keys(updateFields).length === 0) {
+        const errorMessage = "Không có trường nào được cập nhật";
+        throw new CustomError(400, errorMessage); // 400 Bad Request
+      }
+      if (username) {
+        const existingUser = await UserModel.findOne({ username });
+        if (existingUser) {
+          const errorMessage = "Username đã tồn tại";
+          throw new CustomError(409, errorMessage); // 409 Conflict
+        }
+      }
+      if (email) {
+        const existingUser = await UserModel.findOne({ email });
+        if (existingUser) {
+          const errorMessage = "Email đã tồn tại";
+          throw new CustomError(409, errorMessage); // 409 Conflict
+        }
+      }
       const updatedUser = await UserModel.findByIdAndUpdate(
         idUser,
         updateFields,
