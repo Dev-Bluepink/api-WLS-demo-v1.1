@@ -43,8 +43,8 @@ const SchoolSchema: Schema = new Schema(
     countryid: { type: String, default: null },
     status: {
       type: String,
-      default: "active",
-      enum: ["active", "inactive"],
+      default: "Active",
+      enum: ["Active", "Inactive"],
     },
   },
   {

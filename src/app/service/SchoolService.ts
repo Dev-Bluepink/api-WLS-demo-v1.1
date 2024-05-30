@@ -14,7 +14,7 @@ class SchoolService {
       if (error.status && error.message) {
         throw new CustomError(error.status, error.message);
       } else {
-        throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
+        throw new CustomError(500, "Lỗi máy chủ nội bộ: " + error); // 500 Internal Server Error
       }
     }
   }
@@ -32,7 +32,7 @@ class SchoolService {
       if (error.status && error.message) {
         throw new CustomError(error.status, error.message);
       } else {
-        throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
+        throw new CustomError(500, "Lỗi máy chủ nội bộ: " + error); // 500 Internal Server Error
       }
     }
   }
@@ -48,19 +48,19 @@ class SchoolService {
       if (error.status && error.message) {
         throw new CustomError(error.status, error.message);
       } else {
-        throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
+        throw new CustomError(500, "Lỗi máy chủ nội bộ: " + error); // 500 Internal Server Error
       }
     }
   }
 
-  async createSchool(school: {}) {
+  async createSchool(school: any) {
     try {
       return await SchoolModel.create(school);
     } catch (error: any) {
       if (error.status && error.message) {
         throw new CustomError(error.status, error.message);
       } else {
-        throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
+        throw new CustomError(500, "Lỗi máy chủ nội bộ: " + error); // 500 Internal Server Error
       }
     }
   }
@@ -73,7 +73,7 @@ class SchoolService {
       if (error.status && error.message) {
         throw new CustomError(error.status, error.message);
       } else {
-        throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
+        throw new CustomError(500, "Lỗi máy chủ nội bộ: " + error); // 500 Internal Server Error
       }
     }
   }
@@ -116,7 +116,7 @@ class SchoolService {
       if (error.status && error.message) {
         throw new CustomError(error.status, error.message);
       } else {
-        throw new CustomError(500, "Lỗi máy chủ nội bộ");
+        throw new CustomError(500, "Lỗi máy chủ nội bộ: " + error);
       }
     }
   }
@@ -124,8 +124,6 @@ class SchoolService {
     return await SchoolModel.countDocuments({});
   }
   async countSearchResults(
-    page: number,
-    limit: number,
     name?: string,
     tinh?: string,
     quan?: string,
@@ -160,7 +158,7 @@ class SchoolService {
       if (error.status && error.message) {
         throw new CustomError(error.status, error.message);
       } else {
-        throw new CustomError(500, "Lỗi máy chủ nội bộ");
+        throw new CustomError(500, "Lỗi máy chủ nội bộ: " + error);
       }
     }
   }

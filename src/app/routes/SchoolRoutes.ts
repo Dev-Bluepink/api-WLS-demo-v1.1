@@ -1,5 +1,6 @@
 import { Router } from "express";
 import SchoolController from "../controller/SchoolController";
+import upload from "../middleware/MulterMiddleware";
 
 const router = Router();
 
@@ -286,5 +287,100 @@ router.get("/get-all-schools", SchoolController.getAllSchools);
  *         description: Lỗi máy chủ nội bộ
  */
 router.post("/create-school", SchoolController.createSchool);
+
+/**
+ * @swagger
+ * /upload-excel:
+ *   post:
+ *     summary: Tải lên tệp Excel
+ *     tags: [School]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Dữ liệu đã được nhập thành công
+ *       400:
+ *         description: Không có tệp nào được tải lên
+ *       500:
+ *         description: Lỗi khi nhập dữ liệu
+ */
+router.post(
+  "/upload-excel",
+  upload.single("file"),
+  SchoolController.uploadExcel
+);
+
+/**
+ * @swagger
+ * /school/search-school:
+ *   get:
+ *     summary: Tìm kiếm trường học
+ *     tags: [School]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Số trang
+ *       - in: query
+ *         name: PAGE_SIZE
+ *         schema:
+ *           type: integer
+ *         description: Kích thước trang
+ *       - in: query
+ *         name: name
+ *         schema:
+ *           type: string
+ *         description: Tên trường học
+ *       - in: query
+ *         name: tinh
+ *         schema:
+ *           type: string
+ *         description: Tỉnh
+ *       - in: query
+ *         name: quan
+ *         schema:
+ *           type: string
+ *         description: Quận
+ *       - in: query
+ *         name: xa
+ *         schema:
+ *           type: string
+ *         description: Xã
+ *       - in: query
+ *         name: captruong
+ *         schema:
+ *           type: string
+ *         description: Cấp trường
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 count:
+ *                   type: integer
+ *                 totalPage:
+ *                   type: integer
+ *                 schools:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/School'
+ *       404:
+ *         description: Không tìm thấy trường học nào
+ *       500:
+ *         description: Lỗi máy chủ nội bộ
+ */
+router.get("/search-school", SchoolController.searchSchool);
 
 module.exports = router;
