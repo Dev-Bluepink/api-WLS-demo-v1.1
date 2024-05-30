@@ -26,7 +26,13 @@ class UserService {
       const errorMessage = "Username hoặc email đã tồn tại";
       throw new CustomError(409, errorMessage); // 409 Conflict
     }
+    console.log("sss");
     const hashedPassword = hashPassword(password);
+    console.log(username);
+    console.log(email);
+    console.log(hashedPassword);
+    console.log(fullname);
+    console.log(googleId);
     const newUser = new UserModel({
       username,
       email,
