@@ -74,6 +74,7 @@ class CriteriaService {
                       { $eq: ["$criteria", "$$criteria"] },
                       { $eq: ["$school", new mongoose.Types.ObjectId(school)] }, // Thêm điều kiện so sánh school
                       { $eq: ["$user", new mongoose.Types.ObjectId(user)] },
+                      { $eq: ["$status", "Active"] }, // Thêm điều kiện status phải bằng Active
                     ],
                   },
                 },
