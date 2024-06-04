@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import UserService from "../service/UserService";
 import { tokenSign } from "../utils/token";
 import { IUser } from "../models/User";
-const userService = new UserService();
 
 export const login = async (req: Request, res: Response) => {
   const { username, password } = req.body;
@@ -12,12 +11,12 @@ export const login = async (req: Request, res: Response) => {
   }
 
   try {
-    const isValidUser = await userService.validateUser(username, password);
+    const isValidUser = await UserService.validateUser(username, password);
     if (!isValidUser) {
       return res.status(400).send("Username hoặc password không hợp lệ");
     }
 
-    const user = await userService.findUserByUsername(username);
+    const user = await UserService.findUserByUsername(username);
     if (!user) {
       return res.status(404).send("User không tồn tại");
     }
@@ -50,7 +49,7 @@ export const register = async (req: Request, res: Response) => {
   }
 
   try {
-    await userService.addUser(username, email, password);
+    await UserService.addUser(username, email, password);
     res.status(201).send("Người dùng đã được đăng ký");
   } catch (error: any) {
     if (error.status && error.message) {

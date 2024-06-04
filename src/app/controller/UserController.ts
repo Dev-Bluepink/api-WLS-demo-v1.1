@@ -1,8 +1,6 @@
 import UserService from "../service/UserService";
 import { Request, Response } from "express";
 
-const userService = new UserService();
-
 class UserController {
   async getAllUsers(req: Request, res: Response) {
     const page = req.query.page ? parseInt(req.query.page as string) : 1;
@@ -10,8 +8,8 @@ class UserController {
       ? parseInt(req.query.PAGE_SIZE as string)
       : 10;
     try {
-      const users = await userService.getAllUser(page, PAGE_SIZE);
-      const count = await userService.countAllUsers();
+      const users = await UserService.getAllUser(page, PAGE_SIZE);
+      const count = await UserService.countAllUsers();
       const totalPage = Math.ceil(count / PAGE_SIZE);
       res.status(200).json({ count, totalPage, users });
     } catch (error: any) {
@@ -24,7 +22,7 @@ class UserController {
   }
   async getUser(req: Request, res: Response) {
     try {
-      const user = await userService.getUser(req.params.id);
+      const user = await UserService.getUser(req.params.id);
       if (!user) {
         return res.status(404).json({ message: "Người dùng không tồn tại" });
       }
@@ -39,18 +37,18 @@ class UserController {
   }
   async register(req: Request, res: Response) {
     if (!req.body) {
-      return res.status(400).send("Thiếu thông tin đăng ký1");
+      return res.status(400).send("Username, email và password là bắt buộc");
     }
 
     const { email, password } = req.body;
     const username = req.body.username;
 
     if (!username || !email || !password) {
-      return res.status(400).send("Thiếu thông tin đăng ký2");
+      return res.status(400).send("Username, email và password là bắt buộc");
     }
 
     try {
-      await userService.addUser(username, email, password);
+      await UserService.addUser(username, email, password);
       res.status(201).send("Người dùng đã được đăng ký");
     } catch (error: any) {
       if (error.status && error.message) {
@@ -62,7 +60,7 @@ class UserController {
   }
   async updateUser(req: Request, res: Response) {
     try {
-      const user = await userService.updateUser(req.params.id, req.body);
+      const user = await UserService.updateUser(req.params.id, req.body);
       if (!user) {
         return res.status(404).json({ message: "Người dùng không tồn tại" });
       }
@@ -77,7 +75,7 @@ class UserController {
   }
   async toggleUserStatus(req: Request, res: Response) {
     try {
-      const user = await userService.toggleUserStatus(req.params.id);
+      const user = await UserService.toggleUserStatus(req.params.id);
       res.status(200).json(user);
     } catch (error: any) {
       if (error.status && error.message) {

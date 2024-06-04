@@ -5,8 +5,6 @@ import UserService from "../service/UserService";
 import fs from "fs";
 import path from "path";
 
-const userService = new UserService();
-
 const isDistFolderExists = fs.existsSync(
   path.resolve(__dirname, "../../../dist")
 );
@@ -30,9 +28,9 @@ passport.use(
           return done(new Error("Email hoặc Google ID không hợp lệ"), false);
         }
 
-        let user = await userService.findUserByGoogleId(email, id);
+        let user = await UserService.findUserByGoogleId(email, id);
         if (!user) {
-          user = await userService.addUser(email, email, "", id, username);
+          user = await UserService.addUser(email, email, "", id, username);
         }
 
         return done(null, user);
@@ -49,7 +47,7 @@ passport.serializeUser((user: any, done) => {
 
 passport.deserializeUser(async (id: string, done) => {
   try {
-    const user = await userService.findUserById(id);
+    const user = await UserService.findUserById(id);
     done(null, user);
   } catch (error) {
     done(error, null);

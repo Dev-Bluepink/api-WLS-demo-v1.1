@@ -25,7 +25,7 @@ class SchoolService {
         .skip((page - 1) * limit)
         .limit(limit);
       if (!schools || schools.length === 0) {
-        throw new CustomError(404, "Không tìm thấy trường học nào");
+        throw new CustomError(204, "Không tìm thấy trường học nào");
       }
       return schools;
     } catch (error: any) {
@@ -41,7 +41,7 @@ class SchoolService {
     try {
       const school = await SchoolModel.findById(idSchool);
       if (!school) {
-        throw new CustomError(404, "Trường học không tồn tại");
+        throw new CustomError(204, "Trường học không tồn tại");
       }
       return school;
     } catch (error: any) {
@@ -109,7 +109,7 @@ class SchoolService {
         .skip((page - 1) * limit)
         .limit(limit);
       if (schools.length === 0) {
-        throw new CustomError(404, "Không tìm thấy trường học nào");
+        throw new CustomError(204, "Không tìm thấy trường học nào");
       }
       return schools;
     } catch (error: any) {
@@ -151,7 +151,7 @@ class SchoolService {
 
       const count = await SchoolModel.countDocuments(filter);
       if (count === 0) {
-        throw new CustomError(404, "Không tìm thấy trường học nào");
+        throw new CustomError(204, "Không tìm thấy trường học nào");
       }
       return count;
     } catch (error: any) {

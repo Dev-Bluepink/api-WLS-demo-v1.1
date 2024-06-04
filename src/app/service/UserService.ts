@@ -11,7 +11,7 @@ class UserService {
     googleId?: string,
     fullname?: string
   ) {
-    //Kiểm tra xem username và email đã tồn tại chưa
+    // Kiểm tra xem username và email đã tồn tại chưa
     const existingUser = await UserModel.findOne({
       $or: [{ username }, { email }],
     });
@@ -26,22 +26,24 @@ class UserService {
       const errorMessage = "Username hoặc email đã tồn tại";
       throw new CustomError(409, errorMessage); // 409 Conflict
     }
-    console.log("sss");
     const hashedPassword = hashPassword(password);
-    console.log(username);
-    console.log(email);
-    console.log(hashedPassword);
-    console.log(fullname);
-    console.log(googleId);
-    const newUser = new UserModel({
-      username,
-      email,
-      password: hashedPassword,
-      fullname,
-      googleId,
-    });
-    await newUser.save();
-    return newUser;
+    try {
+      const newUser = new UserModel({
+        username,
+        email,
+        password: hashedPassword,
+        fullname,
+        googleId,
+      });
+      await newUser.save();
+      return newUser;
+    } catch (error: any) {
+      if (error.status && error.message) {
+        throw new CustomError(error.status, error.message);
+      } else {
+        throw new CustomError(500, "Lỗi máy chủ nội bộ: " + error); // 500 Internal Server Error
+      }
+    }
   }
 
   async findUserByUsername(username: string) {
@@ -66,7 +68,7 @@ class UserService {
     const user = await this.findUserByUsername(username);
     if (!user) {
       const errorMessage = "User không tồn tại";
-      throw new CustomError(404, errorMessage); // 404 Not Found
+      throw new CustomError(204, errorMessage); // 204 Not Found
     }
     const isPasswordValid = comparePassword(password, user.password);
     if (!isPasswordValid) {
@@ -104,7 +106,7 @@ class UserService {
       }
     } else {
       const errorMessage = "Email không tồn tại";
-      throw new CustomError(404, errorMessage); // 404 Not Found
+      throw new CustomError(204, errorMessage); // 204 Not Found
     }
   }
 
@@ -114,7 +116,7 @@ class UserService {
         .skip((page - 1) * PAGE_SIZE)
         .limit(PAGE_SIZE);
       if (!users || users.length === 0) {
-        throw new CustomError(404, "Không tìm thấy người dùng nào"); // 404 Not Found
+        throw new CustomError(204, "Không tìm thấy người dùng nào"); // 204 Not Found
       }
       return users;
     } catch (error: any) {
@@ -124,7 +126,7 @@ class UserService {
         if (error.status && error.message) {
           throw new CustomError(error.status, error.message);
         } else {
-          throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
+          throw new CustomError(500, "Lỗi máy chủ nội bộ: " + error); // 500 Internal Server Error
         }
       }
     }
@@ -138,7 +140,7 @@ class UserService {
     const user = await UserModel.findById(idUser);
     if (!user) {
       const errorMessage = "Người dùng không tồn tại";
-      throw new CustomError(404, errorMessage); // 404 Not Found
+      throw new CustomError(204, errorMessage); // 204 Not Found
     }
     return user;
   }
@@ -185,14 +187,14 @@ class UserService {
       );
       if (!updatedUser) {
         const errorMessage = "Người dùng không tồn tại";
-        throw new CustomError(404, errorMessage); // 404 Not Found
+        throw new CustomError(204, errorMessage); // 204 Not Found
       }
       return updatedUser;
     } catch (error: any) {
       if (error.status && error.message) {
         throw new CustomError(error.status, error.message);
       } else {
-        throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
+        throw new CustomError(500, "Lỗi máy chủ nội bộ: " + error); // 500 Internal Server Error
       }
     }
   }
@@ -207,7 +209,7 @@ class UserService {
       const user = await UserModel.findById(idUser);
       if (!user) {
         const errorMessage = "Người dùng không tồn tại";
-        throw new CustomError(404, errorMessage); // 404 Not Found
+        throw new CustomError(204, errorMessage); // 204 Not Found
       }
 
       user.status = user.status === "inactive" ? "active" : "inactive";
@@ -218,7 +220,7 @@ class UserService {
       if (error.status && error.message) {
         throw new CustomError(error.status, error.message);
       } else {
-        throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
+        throw new CustomError(500, "Lỗi máy chủ nội bộ: " + error); // 500 Internal Server Error
       }
     }
   }
@@ -227,9 +229,9 @@ class UserService {
     try {
       return await UserModel.countDocuments({});
     } catch (error: any) {
-      throw new CustomError(500, "Lỗi máy chủ nội bộ"); // 500 Internal Server Error
+      throw new CustomError(500, "Lỗi máy chủ nội bộ: " + error); // 500 Internal Server Error
     }
   }
 }
 
-export default UserService;
+export default new UserService();
