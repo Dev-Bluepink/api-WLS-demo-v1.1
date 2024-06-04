@@ -2,8 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { tokenVerify } from "../utils/token";
 import UserService from "../service/UserService";
 
-const userService = new UserService();
-
 export const checkLogin = async (
   req: Request,
   res: Response,
@@ -27,7 +25,7 @@ export const checkLogin = async (
         return res.status(403).json({ message: "Token không hợp lệ" });
       }
 
-      const user = await userService.findUserById(decoded._id);
+      const user = await UserService.findUserById(decoded._id);
       if (!user) {
         return res.status(401).send("Vui lòng đăng nhập lại");
       }
